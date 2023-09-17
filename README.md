@@ -5,8 +5,9 @@ Project 1: Hello, Turtlebots!, Autonomous Maze Solver
 source catkin/deval/setup.bash
 
 export TURTLEBOT3_MODEL=burger
-roslaunch turtlebot3_gazebo turtlebot3_world.launch
-
-rosrun pr2_controller_manager pr2_controller_manager list
+// roslaunch turtlebot3_gazebo turtlebot3_world.launch
+roslaunch turtlebot3_gazebo turtlebot3_maze.launnh
 
 rosrun project1 wallFollower
+
+
