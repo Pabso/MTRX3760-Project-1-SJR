@@ -6,7 +6,7 @@ source catkin/deval/setup.bash
 
 export TURTLEBOT3_MODEL=burger
 // roslaunch turtlebot3_gazebo turtlebot3_world.launch
-roslaunch turtlebot3_gazebo turtlebot3_maze.launnh
+roslaunch turtlebot3_gazebo turtlebot3_maze.launch
 
 rosrun project1 wallFollower
 
