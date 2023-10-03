@@ -1,4 +1,5 @@
 #include "../include/project1/wallFollower.h"
+#include "../include/project1/concaveState.h"
 
 CWallFollower::CWallFollower()
  : nh_priv_("~")
@@ -76,7 +77,7 @@ bool CWallFollower::controlLoop()
 
     break;
     case CONCAVE_CORNER:
-
+      concaveCorner_handler();
     break;
     case FIND_LHS_WALL:
 
@@ -195,3 +196,5 @@ int main(int argc, char* argv[])
   }
   return 0;
 }
+
+//--------------------
