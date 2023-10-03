@@ -16,6 +16,11 @@ rosrun project1 wallFollower
 rosrun rqt_graph rqt_graph  
 roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 
+# connecting to the turtlebot (for local network)
+static ip (192.168.0.69) will have to be changed per network
+ensure the tutlebot is set to wifi mode  
+once the green ligh is flashing on the extension board  
+$ ssh ubuntu@192.168.0.69
 
 
 
