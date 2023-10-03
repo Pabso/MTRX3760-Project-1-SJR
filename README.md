@@ -17,10 +17,12 @@ rosrun rqt_graph rqt_graph
 roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 
 # connecting to the turtlebot (for local network)
-static ip (192.168.0.69) will have to be changed per network 
-ensure the tutlebot is set to wifi mode  
-once the green ligh is flashing on the extension board  
-$ ssh ubuntu@192.168.0.69
+follow steps outlined in turtlebots user guide.  
+static ip (192.168.0.69) will have to be changed per network.   
+ensure the tutlebot is set to wifi mode.  
+once the green ligh is flashing on the extension board
+you can connect to the turtlebot via:  
+$ ssh ubuntu@192.168.0.69  
 
 # Setting up node connections
 A master roscore must be running on the host computer (laptop etc.)
