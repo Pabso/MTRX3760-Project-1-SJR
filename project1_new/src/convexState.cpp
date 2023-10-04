@@ -1,6 +1,6 @@
 #include "../include/project1/convexState.h"
 
-convexState::convexState(ros::NodeHandle& nh) : nh_(nh) {
+convexState::convexState() {
     
     // scan data to detect obstacles
     laser_sub_ = nh_.subscribe("/scan", 1, &convexState::stopTurn, this);
