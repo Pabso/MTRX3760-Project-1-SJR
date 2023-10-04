@@ -23,22 +23,19 @@ void clbk_laser(const sensor_msgs::LaserScan::ConstPtr& msg)
 void CConcaveCorner::init()
 {
     ros::Subscriber sub_laser = n.subscribe("/scan",1,clbk_laser);
-
-    //2 required collsions to enable CConcaveCOrner, must be averaged
 }
 
 void CConcaveCorner::handler(CWallFollower* bot)
 {
     //initalise the Lidar
-    init()
+    init();
 
     //Average Angle
-    double delta_angle = (lidar_Call[0] + lidar_Call[1])/2
+    double delta_angle = (lidar_Call[0] + lidar_Call[1])/2;
 
     //Activate Turn
-    bot->
+    bot->turnOdom(delta_angle);
 
     //Set new State
-    bot->mState CurrentState = DRIVE_FORWARD
-
+    bot->mState CurrentState = DRIVE_FOWARD;
 } 

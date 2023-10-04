@@ -77,7 +77,9 @@ bool CWallFollower::controlLoop()
 
     break;
     case CONCAVE_CORNER:
-      concaveCorner_handler();
+      CConcaveCorner concaveSolver;
+      concaveSolver.handler(this);
+      delete concaveSolver;
     break;
     case FIND_LHS_WALL:
 
@@ -195,12 +197,4 @@ int main(int argc, char* argv[])
     loop_rate.sleep();
   }
   return 0;
-}
-
-//--------------------
-void CWallFollower::concaveCorner_handler(){
-    CConcaveCorner concaveSolver;
-    concaveSolver.handler();
-    mState CurrentState = DRIVE_FOWARD;
-    delete concaveSolver;
 }
