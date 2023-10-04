@@ -16,14 +16,16 @@ class CDriveForward {
         // PID calculation
         double PIDController(double reference, double measured);
 
+        bool handler();
     private:
-        // Important parameters
+        /// ------ Important PID parameters
         double kp_;         // proportional gain
         double ki_;         // integral gain
         double kd_;         // differential gain
         double prevError_;
         double integral_;
         std::chrono::time_point<std::chrono::high_resolution_clock> prevTime_;
+        /// ------ Important PID parameters
 };
 
 #endif // DRIVEFORWARD_H
