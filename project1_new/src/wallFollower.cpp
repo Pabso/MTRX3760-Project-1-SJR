@@ -31,24 +31,23 @@ bool CWallFollower::init()
   // Initialize varibales
 
   ROS_INFO("INIT FIN");
+
+  // Fill mScanRanges with zeros
+  for ( const auto &pair : mRotationAngles)
+    mScanDataRange[pair.first] = 0.0;
+
   return true;
 }
 
 void CWallFollower::laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
-  // // interate over mScanDataRanges
-  // for (int num = 0; num < 2; num++)
-  // {
-  //   // If the scanned distance is inf set to range_max
-  //   if (std::isinf(msg->ranges.at(_mScanAngle[num])))
-  //   {
-  //     mScanDataRanges[num] = msg->range_max;
-  //   }
-  //   else
-  //   {
-  //     mScanDataRanges[num] = msg->ranges.at(_mScanAngle[num]);
-  //   }
-  // }
+  for (const auto &pair : mRotationAngles)
+  {
+    if (std::isinf(msg->ranges.at(pair.second)))
+      mScanDataRange[pair.first] = msg->range_max;
+    else 
+      mScanDataRange[pair.first] = msg->ranges.at(pair.second);
+  }
 }
 
 void CWallFollower::updatecommandVelocity(double linear, double angular)
@@ -66,16 +65,18 @@ bool CWallFollower::controlLoop()
 {
   /// Implement state machine here!
   // local static variable is set only the first time the function is called.
+  static CDriveForward driveFoward(kp_, ki_, kd_);
   static mState currentState = DRIVE_FOWARD;
   static mState nextState;
 
   switch(currentState)
   {
-    case DRIVE_FOWARD:
-
-    break;
+    case States::DRIVE_FOWARD:
+      driveFoward.handler(this);
+      updatecommandVelocity(linearV, angularV);
+      break;
     case CONVEX_CORNER:
-	convexState convexState;
+      convexState convexState;
 	convexState.turnLeft();
 	delete convexState;
     break;
@@ -91,6 +92,8 @@ bool CWallFollower::controlLoop()
       nextState = DRIVE_FOWARD;
     break;
   }
+  // update current State
+  currentState = nextState;
   return true;
 }
 
@@ -180,17 +183,17 @@ int main(int argc, char* argv[])
   ros::init(argc, argv, "wallFollower");
   CWallFollower wallFollower;
 
-  ros::Rate loop_rate(50); // 50 Hz
+  ros::Rate loop_rate(30); // 30 Hz
 
   // ros::ok handles ctrl+C interupts 
   ROS_INFO("Main Whileloop Start");
   
-  // Loop until angle is not zero!
-  while (ros::ok() && fabs(wallFollower.mRotationAngle) < 1e-2)
-  {
-    ros::spinOnce();
-    loop_rate.sleep();
-  }
+  // // Loop until angle is not zero!
+  // while (ros::ok() && fabs(wallFollower.mRotationAngle) < 1e-2)
+  // {
+  //   ros::spinOnce();
+  //   loop_rate.sleep();
+  // }
 
   while (ros::ok())
   {
