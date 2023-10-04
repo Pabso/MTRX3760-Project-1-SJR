@@ -103,6 +103,9 @@ class CWallFollower
     // 270 deg is left
     bool turnOdom(double angle);
 
+    //State Functions
+    void concaveCorner_handler();
+
 };
 
 #endif // WALLFOLLWER_H 

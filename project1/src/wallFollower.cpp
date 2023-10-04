@@ -1,5 +1,3 @@
-
-
 #include "../include/project1/wallFollower.h"
 
 CWallFollower::CWallFollower()
