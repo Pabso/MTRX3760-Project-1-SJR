@@ -22,11 +22,18 @@ void convexState::turnLeft() {
 }
 
 void convexState::stopTurn(const sensor_msgs::LaserScan::ConstPtr& scan) {
+    // get number of points
+    int pts = scan->ranges.size();
+
+    // make sure pts > 0
+    if (pts > 0) {
+
+        // check left pt
+        int leftIndex = 0; 
     
-    // check for wall within the threshold
-    for (int i = 0; i < scan->ranges.size(); ++i) {
-        if (scan->ranges[i] < threshold_) {
-            
+        // check for wall within the threshold at left point
+        if (scan->ranges[leftIndex] < threshold_) {
+                
             // when detected, stop turning and face forward
             geometry_msgs::Twist cmd_vel;
             cmd_vel.angular.z = 0.0;    // angular velocity
