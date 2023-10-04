@@ -1,5 +1,5 @@
 #include "../include/project1/wallFollower.h"
-#include "../include/project1/concaveState.h"
+#include "../include/project1/ConcaveCorner.h"
 
 CWallFollower::CWallFollower()
  : nh_priv_("~")
@@ -198,3 +198,9 @@ int main(int argc, char* argv[])
 }
 
 //--------------------
+void CWallFollower::concaveCorner_handler(){
+    CConcaveCorner concaveSolver;
+    concaveSolver.handler();
+    mState CurrentState = DRIVE_FOWARD;
+    delete concaveSolver;
+}
