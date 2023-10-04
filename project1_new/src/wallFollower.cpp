@@ -1,5 +1,6 @@
 #include "../include/project1/wallFollower.h"
 #include "../include/project1/ConcaveCorner.h"
+#include "../include/project1/convexState.h"
 
 CWallFollower::CWallFollower()
  : nh_priv_("~")
@@ -74,7 +75,9 @@ bool CWallFollower::controlLoop()
 
     break;
     case CONVEX_CORNER:
-
+	convexState convexState;
+	convexState.turnLeft();
+	delete convexState;
     break;
     case CONCAVE_CORNER:
       CConcaveCorner concaveSolver;
