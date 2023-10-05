@@ -30,8 +30,9 @@ on pc:
 $ ssh ubuntu@192.168.184.69  
 on turtlebot:  
 $ export ROS_HOSTNAME=192.168.184.69
+$ export ROS_MASTER_URI=http://192.168.184.79:11311/
 $ roswtf
-$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
+$ roslaunch turtlebot3_bringup turtlebot3_robot.launch  
 on pc:  
 $ export TURTLEBOT3_MODEL=burger  
 $ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch  
