@@ -26,6 +26,8 @@ $ ssh ubuntu@192.168.0.69
 
 # Setting up node connections
 A master roscore must be running on the host computer (laptop etc.)
+ON the PC change hostname to ip4 adress found on ifconfig!! e.g   
+export ROS_HOSTNAME=192.168.0.13
 roscore will provide you with a ROS_MASTER_URI, this needs to be exported on the turtlebot:  
 $ export ROS_MASTER_URI=http://192.168.0.13:11311/  
 note that the url will be different for each instance of roscore.
