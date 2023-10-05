@@ -72,27 +72,38 @@ bool CWallFollower::controlLoop()
   switch(currentState)
   {
     case States::DRIVE_FOWARD:
+    {
       driveFoward.handler(this);
       updatecommandVelocity(linearV, angularV);
       break;
+    }
     case States::CONVEX_CORNER:
+    {
       convexState convexState;
 	    convexState.turnLeft(this);
 	    //delete convexState;
-    break;
+      break;
+    }
     case States::CONCAVE_CORNER:
+    {
       CConcaveCorner concaveSolver;
       concaveSolver.handler(this);
       //delete concaveSolver;
-    break;
+      break;
+    }
     case States::FIND_LHS_WALL:
-
-    break;
+    {
+      break;
+    }
     case States::END:
-    break;
+    {
+      break;
+    }
     default:
+    {  
       nextState = States::DRIVE_FOWARD;
-    break;
+      break;
+    }
   }
   // update current State
   currentState = nextState;
