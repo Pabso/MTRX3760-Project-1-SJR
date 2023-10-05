@@ -163,9 +163,12 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(wallFollower src/wallFollower.cpp)
-add_dependencies(wallFollower ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(wallFollower ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_executable(${PROJECT_NAME}_node src/wallFollower.cpp src/DriveForward.cpp)
+
+# add_executable(${PROJECT_NAME}_node src/DriveForward.cpp)
+
+add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 
 #############
 ## Install ##
@@ -209,7 +212,8 @@ target_link_libraries(wallFollower ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
-install(TARGETS wallFollower
+install(TARGETS 
+  ${PROJECT_NAME}_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
