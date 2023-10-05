@@ -3,20 +3,16 @@
 
 #include "../include/project1/wallFollower.h"
 
-//#include </opt/ros/noetic/share/ros/ros.h>                already in wallFollower??
-//#include </opt/ros/noetic/share/geometry_msgs/Twist.h>    already in wallFollower??
-//#include </opt/ros/noetic/share/sensor_msgs/LaserScan.h>  already in wallFollower??
-
 class convexState {
 public:
-    convexState(ros::NodeHandle& nh);
-    void turnLeft(const sensor_msgs::LaserScan::ConstPtr& scan);
+    //convexState(ros::NodeHandle& nh);
+    void turnLeft(CWallFollower* bot);
 
 private:
-    ros::NodeHandle nh_;
-    ros::Subscriber laser_sub_;
-    ros::Publisher cmd_vel_pub_;
-    double threshold_ = 0.15; //150mm
+    //ros::NodeHandle nh_;
+    //ros::Subscriber laser_sub_;
+    double dist;
+    double threshold_ = 150; //150mm
     bool turning_ = false;
 };
 
