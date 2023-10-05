@@ -88,7 +88,7 @@ double CDriveForward::PIDController(double reference, double measured)
   double derivative = (error - prevError_) / dt;
 
   // Calculate the PID output
-  double output = kp_ * error + ki_ * error + kd_ * error;
+  double output = kp_ * error + ki_ * integral_ + kd_ * derivative;
 
   // Alternatively, just use PI
   // double output = kp_ * error + ki_ * error + kd_;
