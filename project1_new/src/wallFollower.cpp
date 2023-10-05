@@ -66,7 +66,7 @@ bool CWallFollower::controlLoop()
   /// Implement state machine here!
   // local static variable is set only the first time the function is called.
   static CDriveForward driveFoward(kp_, ki_, kd_);
-  static States currentState = DRIVE_FOWARD;
+  static States currentState = States::DRIVE_FOWARD;
   static States nextState;
 
   switch(currentState)
@@ -77,8 +77,8 @@ bool CWallFollower::controlLoop()
       break;
     case States::CONVEX_CORNER:
       convexState convexState;
-	convexState.turnLeft();
-	delete convexState;
+	    convexState.turnLeft(this);
+	    //delete convexState;
     break;
     case States::CONCAVE_CORNER:
       CConcaveCorner concaveSolver;
@@ -87,6 +87,8 @@ bool CWallFollower::controlLoop()
     break;
     case States::FIND_LHS_WALL:
 
+    break;
+    case States::END:
     break;
     default:
       nextState = States::DRIVE_FOWARD;

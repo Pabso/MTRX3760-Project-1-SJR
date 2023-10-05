@@ -131,7 +131,8 @@ class CWallFollower
       DRIVE_FOWARD = 0,
       CONVEX_CORNER,
       CONCAVE_CORNER,
-      FIND_LHS_WALL
+      FIND_LHS_WALL,
+      END
     };
     ///
     States currentState = States::DRIVE_FOWARD;
