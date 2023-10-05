@@ -37,5 +37,5 @@ void CConcaveCorner::handler(CWallFollower* bot)
     bot->turnOdom(delta_angle);
 
     //Set new State
-    bot->mState CurrentState = DRIVE_FOWARD;
+    bot->States nextState = DRIVE_FOWARD;
 } 
