@@ -163,7 +163,7 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(${PROJECT_NAME}_node src/wallFollower.cpp src/DriveForward.cpp)
+add_executable(${PROJECT_NAME}_node src/wallFollower.cpp src/DriveForward.cpp src/concave.cpp src/convexState.cpp src/DetermineEnd.cpp)
 
 # add_executable(${PROJECT_NAME}_node src/DriveForward.cpp)
 
