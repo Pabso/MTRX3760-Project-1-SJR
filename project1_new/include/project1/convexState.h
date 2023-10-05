@@ -1,7 +1,7 @@
 #ifndef CONVEX_H
 #define CONVEX_H
 
-#include "w./include/project1/wallFollower.h"
+#include "../include/project1/wallFollower.h"
 
 //#include </opt/ros/noetic/share/ros/ros.h>                already in wallFollower??
 //#include </opt/ros/noetic/share/geometry_msgs/Twist.h>    already in wallFollower??
@@ -16,7 +16,7 @@ private:
     ros::NodeHandle nh_;
     ros::Subscriber laser_sub_;
     ros::Publisher cmd_vel_pub_;
-    double threshold_ = 150; //150mm
+    double threshold_ = 0.15; //150mm
     bool turning_ = false;
 };
 
