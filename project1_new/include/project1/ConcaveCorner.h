@@ -21,6 +21,6 @@ class CConcaveCorner
         int TURTLEBOT_LIDAR_OFFSET_Y = 0.01;
         double lidar_Call[DATA_READINGS];
 
-}
+};
 
 #endif //CONCAVESTATE_H
