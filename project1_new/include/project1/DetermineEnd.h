@@ -1,11 +1,12 @@
-#ifndef DETERMINEND_H
-#define DETERMINEND_H
+#ifndef DETERMINEEND_H
+#define DETERMINEEND_H
 
 class Camera 
 {
     public:
         
     private:
+        
 };
 
-#endif
+#endif // DETERMINEEND_H
