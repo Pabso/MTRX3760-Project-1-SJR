@@ -26,7 +26,15 @@ $ ssh ubuntu@192.168.0.69
 # Hotspot
 PC static: 192.168.184.79  
 Turtlebot Static: 192.168.184.69  
-
+on pc:  
+$ ssh ubuntu@192.168.184.69  
+on turtlebot:  
+$ export ROS_HOSTNAME=192.168.184.69
+$ roswtf
+$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
+on pc:  
+$ export TURTLEBOT3_MODEL=burger  
+$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch  
 
 ## Setting up node connections
 A master roscore must be running on the host computer (laptop etc.)
