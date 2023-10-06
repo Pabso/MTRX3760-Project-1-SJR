@@ -7,7 +7,7 @@
 class End
 {
     public:
-        
+        void End::handler(CWallFollower *bot);
     private:
 };
 

@@ -28,7 +28,7 @@ bool CWallFollower::init()
   // for scan topic
   laser_scan_sub_  = nh_.subscribe("scan", 10, &CWallFollower::laserScanMsgCallBack, this);
   odom_sub_ = nh_.subscribe("odom", 10, &CWallFollower::odomMsgCallBack, this);
-  image_transport::Subscriber sub = it.subscribe("camera/image", 10, imageCallback);
+  image_transport::Subscriber sub = it.subscribe("camera/image", 10, &CWallFollower::imageCallback, this);
   // Initialize varibales
 
   ROS_INFO("INIT FIN");

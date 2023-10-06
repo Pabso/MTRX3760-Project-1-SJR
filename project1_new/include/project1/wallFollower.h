@@ -75,7 +75,7 @@ class CWallFollower
   void updatecommandVelocity(double linear, double angular);
   void laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg);
   void odomMsgCallBack(const nav_msgs::Odometry::ConstPtr &msg);
-  static void imageCallback(const sensor_msgs::ImageConstPtr& msg);
+  void imageCallback(const sensor_msgs::ImageConstPtr& msg);
   // Private Variables
   /**
     * Dictionary that maps a given rotation angle to the angles specified
@@ -166,9 +166,9 @@ class CWallFollower
      * Must store the RGB values which determine a red surface
      * Must store the percentage red of the surface
      */
-    int MAX_BLUE_ = 100;
-    int MAX_GREEN_ = 60;
-    int MIN_RED_ = 210;
+    const int MAX_BLUE_ = 100;
+    const int MAX_GREEN_ = 60;
+    const int MIN_RED_ = 210;
 
     double Density_Red = 0; //value 0-1
     double Thresh_Desnsity_Red = 0.6;
