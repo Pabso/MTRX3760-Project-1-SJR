@@ -28,7 +28,7 @@ class CDriveForward {
         * @returns the 
     */ 
     
-    double PIDController(double reference, double measured);
+    double PIDController(double reference, double measured, CWallFollower *wf);
 
     void handler(CWallFollower *wf);
 

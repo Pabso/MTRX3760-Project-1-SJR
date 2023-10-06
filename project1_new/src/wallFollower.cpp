@@ -117,8 +117,8 @@ bool CWallFollower::controlLoop()
     case States::CONVEX_CORNER:
     {
       convexState convexState;
-	    convexState.turnLeft(this);
-	    //delete convexState;
+      convexState.turnLeft(this);
+      updatecommandVelocity(linearV, angularV);
       break;
     }
     case States::CONCAVE_CORNER:

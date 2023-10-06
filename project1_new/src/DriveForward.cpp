@@ -66,7 +66,7 @@ void CDriveForward::handler(CWallFollower* wf)
   wf->angularV = PIDController(wf->bubble_size_, smallest_LHS_distance);
 }
 
-double CDriveForward::PIDController(double reference, double measured) 
+double CDriveForward::PIDController(double reference, double measured, CWallFollower* wf) 
 {
   // Measure the current time to find dt
   auto currentTime = std::chrono::high_resolution_clock::now();
@@ -74,9 +74,6 @@ double CDriveForward::PIDController(double reference, double measured)
   // Calculate time elapsed since previous iteration
   std::chrono::duration<double> elapsedTime;
   double dt = elapsedTime.count();
-
-  // ensure the dt is not greater than 0.1s (IMPORTANT!)
-  dt = (dt > 0.1) ? 0 : dt;
   
   // Calculate error between the reference and the measured signals
   double error = reference - measured;
@@ -84,14 +81,28 @@ double CDriveForward::PIDController(double reference, double measured)
   // Update the integral term (Euler's method)
   integral_ += error * dt;
 
-  // Calculate the derivative term using backwards difference
-  double derivative = (error - prevError_) / dt;
+  double output;
+  double derivative;
 
-  // Calculate the PID output
-  double output = kp_ * error + ki_ * integral_ + kd_ * derivative;
+  if ((wf->previousState != wf->States::DRIVE_FOWARD) || (dt > 0.1)) {
+    derivative = 0;
 
-  // Alternatively, just use PI
-  // double output = kp_ * error + ki_ * error + kd_;
+    // Set output to PI if dt is too large or the last state was drive forward
+    output = kp_ * error + ki_ * error;
+  }
+  else {
+    derivative = (error - prevError_) / dt;
+
+    // Output PID if the data is good
+    output = kp_ * error + ki_ * integral_ + kd_ * derivative;
+  }
+
+
+  // // Calculate the derivative term using backwards difference
+  // double derivative = (error - prevError_) / dt;
+
+  // // Calculate the PID output
+  // double output = kp_ * error + ki_ * integral_ + kd_ * derivative;
 
   // Update the previous time to the current time for next iteration
   prevTime_ = currentTime;
