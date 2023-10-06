@@ -10,10 +10,10 @@ class CConcaveCorner
         void handler(CWallFollower* bot);
     private:
         void init(CWallFollower* bot);
-        int delta_angle_comp(CWallFollower* bot);
         void laser_data_sraper(CWallFollower* bot);
 
-        int laser_angle;
+        double laser_angle_sum;
+        double laser_angle_avg;
 
 };
 

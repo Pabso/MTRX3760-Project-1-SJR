@@ -1,6 +1,7 @@
 #include "../include/project1/wallFollower.h"
 #include "../include/project1/ConcaveCorner.h"
 #include "../include/project1/convexState.h"
+#include <image_transport/image_transport.h>
 
 CWallFollower::CWallFollower()
  : nh_priv_("~")
@@ -21,14 +22,14 @@ CWallFollower::~CWallFollower()
 bool CWallFollower::init()
 {
   // initalisze publishers
-  cmd_vel_pub_  = nh_.advertise<geometry_msgs::Twist>( "/cmd_vel", 10 );
   image_transport::ImageTransport it(nh_);
-  image_transport::Publisher pub = it.advertise("camera/image", 10);
+  cmd_vel_pub_  = nh_.advertise<geometry_msgs::Twist>( "/cmd_vel", 10 );
+  image_transport::Publisher pub_img = it.advertise("camera/image", 10);
   /// initialize subscribers
   // for scan topic
   laser_scan_sub_  = nh_.subscribe("scan", 10, &CWallFollower::laserScanMsgCallBack, this);
   odom_sub_ = nh_.subscribe("odom", 10, &CWallFollower::odomMsgCallBack, this);
-  image_transport::Subscriber sub = it.subscribe("camera/image", 10, &CWallFollower::imageCallback, this);
+  image_transport::Subscriber sub_img = it.subscribe("camera/image", 10, &CWallFollower::imageCallback, this);
   // Initialize varibales
 
   ROS_INFO("INIT FIN");
@@ -40,7 +41,16 @@ bool CWallFollower::init()
   return true;
 }
 
-
+void CWallFollower::laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg)
+{
+  for (const auto &pair : mRotationAngles)
+  {
+    if (std::isinf(msg->ranges.at(pair.second)))
+      mScanDataRange[pair.first] = msg->range_max;
+    else 
+      mScanDataRange[pair.first] = msg->ranges.at(pair.second);
+  }
+}
 void CWallFollower::imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
   //Convert ROS image to OpenCV to process
@@ -82,20 +92,8 @@ void CWallFollower::imageCallback(const sensor_msgs::ImageConstPtr& msg)
   //Add some delay in miliseconds. The function only works if there is at least one HighGUI window created and the window is active. If there are several HighGUI windows, any of them can be active.
   cv::waitKey(3);
   //Publish new image 
-  pub.publish(cv_ptr->toImageMsg());
+  //pub.publish(cv_ptr->toImageMsg());
 
-}
-
-
-void CWallFollower::laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg)
-{
-  for (const auto &pair : mRotationAngles)
-  {
-    if (std::isinf(msg->ranges.at(pair.second)))
-      mScanDataRange[pair.first] = msg->range_max;
-    else 
-      mScanDataRange[pair.first] = msg->ranges.at(pair.second);
-  }
 }
 
 void CWallFollower::updatecommandVelocity(double linear, double angular)
@@ -113,47 +111,43 @@ bool CWallFollower::controlLoop()
 {
   /// Implement state machine here!
   // local static variable is set only the first time the function is called.
-  static CDriveForward driveFoward(kp_, ki_, kd_);
-  static States currentState = States::DRIVE_FOWARD;
-  static States nextState;
+  
 
+  static CDriveForward driveFoward(kp_, ki_, kd_);
+  CConcaveCorner concaveSolver;
+  convexState convexState;
   switch(currentState)
   {
     case States::DRIVE_FOWARD:
-    {
       driveFoward.handler(this);
+      ROS_INFO("anglular: %f", angularV);
       updatecommandVelocity(linearV, angularV);
-      break;
-    }
+    break;
     case States::CONVEX_CORNER:
-    {
-      convexState convexState;
+      ROS_INFO("State [%d]", int(currentState));
       convexState.turnLeft(this);
       updatecommandVelocity(linearV, angularV);
-      break;
-    }
+    break;
     case States::CONCAVE_CORNER:
-    {
-      CConcaveCorner concaveSolver;
+      ROS_INFO("State [%d]", int(currentState));
       concaveSolver.handler(this);
-      //delete concaveSolver;
-      break;
-    }
+    break;
     case States::FIND_LHS_WALL:
-    {
-      break;
-    }
+      ROS_INFO("State [%d]", int(currentState));
+      nextState = States::FIND_LHS_WALL;
+      updatecommandVelocity(0.0, 0.0);
+    break;
     case States::END:
     {
+      ROS_INFO("State [%d]", int(currentState));
       break;
     }
     default:
-    {  
       nextState = States::DRIVE_FOWARD;
-      break;
-    }
+    break;
   }
   // update current State
+  previousState = currentState;
   currentState = nextState;
   return true;
 }
@@ -185,7 +179,7 @@ bool CWallFollower::turnOdom(double angle)
   base_cmd.linear.x = base_cmd.linear.y = 0.0;
   base_cmd.angular.z = ANGULAR_VELOCITY;
 
-  // Rotates CCW default 
+  // Turtlebot rotates CCW default 
   double angledif = mRotationAngle - angle;
   ros::Rate rate(50.0);
   bool done = false;
@@ -238,6 +232,14 @@ bool CWallFollower::turnOdom(double angle)
   return true;
 }
 
+void CWallFollower::debug()
+{
+  for (const auto &pair : mScanDataRange)
+  {
+    ROS_INFO("[%d,%f]",pair.first, pair.second);
+  }
+}
+
 // ------------------------ Main -----------------------------------------------
 int main(int argc, char* argv[])
 {
@@ -247,21 +249,28 @@ int main(int argc, char* argv[])
   ros::Rate loop_rate(30); // 30 Hz
 
   // ros::ok handles ctrl+C interupts 
+  
+  // Loop until angle is not zero!
+  //ROS_INFO("before loop: %d, %f", ros::ok(), (wallFollower.mScanDataRange[90] > 0.05));
+  while (ros::ok() && (wallFollower.mScanDataRange[0] < 0.05))
+  {
+    //std::cout << wallFollower.mScanDataRange[90] << std::endl;
+    ros::spinOnce();
+    loop_rate.sleep();
+    //ROS_INFO("in loop: %f", wallFollower.mScanDataRange[90]);
+  }
+  //ROS_INFO("Scan data [%f,%f],", wallFollower.mScanDataRange[0], wallFollower.mScanDataRange[180]);
   ROS_INFO("Main Whileloop Start");
   
-  // // Loop until angle is not zero!
-  // while (ros::ok() && fabs(wallFollower.mRotationAngle) < 1e-2)
-  // {
-  //   ros::spinOnce();
-  //   loop_rate.sleep();
-  // }
-
   while (ros::ok())
   {
     wallFollower.controlLoop();
+    //wallFollower.debug();
     // callbacks
     ros::spinOnce();
     loop_rate.sleep();
   }
   return 0;
 }
+
+//--------------------

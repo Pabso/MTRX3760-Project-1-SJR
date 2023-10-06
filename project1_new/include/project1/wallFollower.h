@@ -44,18 +44,11 @@
 #include <nav_msgs/Odometry.h>          // for odom data
 #include <geometry_msgs/Twist.h>        // for geometry msg
 
+
 #include <image_transport/image_transport.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 
-
-// class dstream_out
-// {
-//   public:
-//     //States nextState = DRIVEFORWARD_H;
-//     double angularVelocity = 0.0;
-//     double linearVelocity = 0.0;
-// } ;
 class CDriveForward;
 
 class CWallFollower
@@ -63,11 +56,13 @@ class CWallFollower
   // ROS NodeHandles
   ros::NodeHandle nh_;
   ros::NodeHandle nh_priv_;
+  
 
   // ROS Topic Publishers
   ros::Publisher cmd_vel_pub_;
 
-  // ROS Topic Subscribers
+
+  // ROS Topic Subscribersg
   ros::Subscriber laser_scan_sub_;
   ros::Subscriber odom_sub_;
 
@@ -76,6 +71,7 @@ class CWallFollower
   void laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg);
   void odomMsgCallBack(const nav_msgs::Odometry::ConstPtr &msg);
   void imageCallback(const sensor_msgs::ImageConstPtr& msg);
+
   // Private Variables
   /**
     * Dictionary that maps a given rotation angle to the angles specified
@@ -125,9 +121,9 @@ class CWallFollower
     {180, 270}
     };
     // FOR PID Controller
-    double kp_ = 1.0;
+    double kp_ = 2.0;
     double ki_ = 1.0;
-    double kd_ = 1.0;
+    double kd_ = 0.01;
   public:
     /// Statemachine enum
     enum class States : int
@@ -141,7 +137,14 @@ class CWallFollower
     ///
     States currentState = States::DRIVE_FOWARD;
     States nextState;
+    States previousState = States::DRIVE_FOWARD;
     ///
+    const int MAX_BLUE_ = 100;
+    const int MAX_GREEN_ = 60;
+    const int MIN_RED_ = 210;
+
+    double Density_Red = 0; //value 0-1
+    double Thresh_Desnsity_Red = 0.6;
     //
     double bubble_size_ = 0.3;
     double bublle_tolerance = 0.05;
@@ -155,24 +158,9 @@ class CWallFollower
     * Ranges are in m.
     */
     std::map<int, double> mScanDataRange;
-
     ///
-    double linearV= LINEAR_VELOCITY;
+    double linearV = LINEAR_VELOCITY;
     double angularV = ANGULAR_VELOCITY;
-
-    /**
-     * Camera Color detection to determine the end of the maze 
-     * Need to define tolerances of end of maze color which will be red
-     * Must store the RGB values which determine a red surface
-     * Must store the percentage red of the surface
-     */
-    const int MAX_BLUE_ = 100;
-    const int MAX_GREEN_ = 60;
-    const int MIN_RED_ = 210;
-
-    double Density_Red = 0; //value 0-1
-    double Thresh_Desnsity_Red = 0.6;
-
 
     CWallFollower();
     ~CWallFollower();
@@ -187,7 +175,8 @@ class CWallFollower
      * Main Control loop, contains FSM.
     */
     bool controlLoop();
-
+    ///
+    void debug();
     /**
      * Rotate function
      * 

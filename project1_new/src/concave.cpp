@@ -1,4 +1,5 @@
 #include "../include/project1/ConcaveCorner.h"
+#include <cmath>
 
 // void CConcaveCorner::clbk_laser(const sensor_msgs::LaserScan::ConstPtr& msg)
 // {   
@@ -28,13 +29,18 @@ void CConcaveCorner::init(CWallFollower* bot)
 
 void CConcaveCorner::laser_data_sraper(CWallFollower* bot)
 {   
+    int increment = 0;
+
     for (const auto &pair : bot->mScanDataRange)
     {
         if(pair.second < 2*bot->bubble_size_ && pair.first > 20)
         { 
-            laser_angle = pair.first;
+            laser_angle_sum = (pair.first/180)*M_PI;
+            increment++;
         }
     }
+
+    laser_angle_avg = laser_angle_sum/increment;
 }
 
 void CConcaveCorner::handler(CWallFollower* bot)
@@ -43,7 +49,7 @@ void CConcaveCorner::handler(CWallFollower* bot)
     init(bot);
 
     //Activate Turn
-    bot->turnOdom(laser_angle);
+    bot->turnOdom(laser_angle_avg);
 
     //Set new State
     bot->nextState = bot->States::DRIVE_FOWARD;

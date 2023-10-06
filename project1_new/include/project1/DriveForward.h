@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include <chrono>           // for measuring times
+#include <map>
 
 //
-#define NOMINAL_LINEAR_VELOCITY 0.2
-#define SLOW_LINEAR_VELOCITY 0.1
+#define NOMINAL_LINEAR_VELOCITY 0.1
+#define SLOW_LINEAR_VELOCITY    0.05
 
 // Foward declaration
 class CWallFollower;
@@ -28,12 +29,17 @@ class CDriveForward {
         * @returns the 
     */ 
     
-    double PIDController(double reference, double measured, CWallFollower *wf);
-
     void handler(CWallFollower *wf);
 
   private:
-    
+    // How large the convex bubble size should be
+    const double convex_bubble_size_coeficient = 1.5;
+    const int main_ros_rate = 30;
+    const int scan_rate = 5;
+    const int mWindowSize = 3;
+    const int factoredWindow = 15;
+    std::map<int, double> applyMovingAverageFilter(CWallFollower* wf, const std::map<int, double>& mDataRange);
+    double PIDController(double reference, double measured);
     /// ------ Important PID parameters
     double kp_;         // proportional gain
     double ki_;         // integral gain
