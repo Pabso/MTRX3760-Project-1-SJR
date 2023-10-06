@@ -7,8 +7,7 @@
 class End
 {
     public:
-        void End::handler(CWallFollower *bot);
-    private:
+        void handler(CWallFollower *bot);
 };
 
 #endif // DETERMINEEND_H
