@@ -23,17 +23,28 @@ ensure the tutlebot is set to wifi mode.
 once the green ligh is flashing on the extension board
 you can connect to the turtlebot via:  
 $ ssh ubuntu@192.168.0.69  
+
 # Hotspot
 PC static: 192.168.184.79  
 Turtlebot Static: 192.168.184.69  
 on pc:  
-$ ssh ubuntu@192.168.184.69  
+$ ssh ubuntu@192.168.184.10  
+on pc:  
+$ export ROS_IP=192.168.184.79  
+$ export ROS_HOSTNAME=192.168.184.79  
+$ roscore  
 on turtlebot:  
-$ export ROS_HOSTNAME=192.168.184.69
-$ export ROS_MASTER_URI=http://192.168.184.79:11311/
-$ roswtf
+$ export ROS_IP=192.168.184.10  
+$ export ROS_HOSTNAME=192.168.184.10  
+$ export ROS_MASTER_URI=http://192.168.184.79:11311/  
+$ roswtf  
 $ roslaunch turtlebot3_bringup turtlebot3_robot.launch  
 on pc:  
+$ export ROS_IP=192.168.184.79  
+$ export ROS_HOSTNAME=192.168.184.79  
+$ rosrun project1 project1_node
+
+
 $ export TURTLEBOT3_MODEL=burger  
 $ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch  
 
