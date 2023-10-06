@@ -14,7 +14,7 @@ class CWallFollower;
 class CDriveForward {
   public:
     // Constructor to get kp, ki, kd
-    CDriveForward(double kp, double ki, double kd, CWallFollower *wf) 
+    CDriveForward(double kp, double ki, double kd) 
             : kp_(kp), ki_(ki), kd_(kd), prevError_(0.0), integral_(0.0) {
                 prevTime_ = std::chrono::high_resolution_clock::now();
             };
@@ -28,7 +28,7 @@ class CDriveForward {
         * @returns the 
     */ 
     
-    double PIDController(double reference, double measured);
+    double PIDController(double reference, double measured, CWallFollower *wf);
 
     void handler(CWallFollower *wf);
 
