@@ -22,12 +22,13 @@ bool CWallFollower::init()
 {
   // initalisze publishers
   cmd_vel_pub_  = nh_.advertise<geometry_msgs::Twist>( "/cmd_vel", 10 );
-
+  image_transport::ImageTransport it(nh_);
+  image_transport::Publisher pub = it.advertise("camera/image", 10);
   /// initialize subscribers
   // for scan topic
   laser_scan_sub_  = nh_.subscribe("scan", 10, &CWallFollower::laserScanMsgCallBack, this);
   odom_sub_ = nh_.subscribe("odom", 10, &CWallFollower::odomMsgCallBack, this);
-
+  image_transport::Subscriber sub = it.subscribe("camera/image", 10, imageCallback);
   // Initialize varibales
 
   ROS_INFO("INIT FIN");
@@ -38,6 +39,42 @@ bool CWallFollower::init()
 
   return true;
 }
+
+
+void CWallFollower::imageCallback(const sensor_msgs::ImageConstPtr& msg)
+{
+  cv_bridge::CvImagePtr cv_ptr;
+
+  try
+  {
+    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+  }
+  catch (cv_bridge::Exception& e)
+  {
+    ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
+  }
+
+  int total_pixels = cv_ptr->image.cols*cv_ptr->image.rows;
+  int red_pixels = 0;
+
+  //Go through all columns
+  for(int y = 0; y < cv_ptr->image.cols; y++ )
+  { 
+    //go through all rows
+    for(int x = 0; x < cv_ptr->image.rows; x++ )
+    {
+      //go through all channels (b,g,r)
+      if (cv_ptr->image.data[0 + 3*x + y*cv_ptr->image.cols*4 ] < MAX_BLUE_ && cv_ptr->image.data[1 + 3*x + y*cv_ptr->image.cols*4 ] < MAX_GREEN_ && cv_ptr->image.data[2 + 3*x + y*cv_ptr->image.cols*4 ] > MIN_RED_)
+        {
+          red_pixels++;
+        }
+    }
+  }
+
+  Density_Red = red_pixels/total_pixels;
+
+}
+
 
 void CWallFollower::laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg)
 {

@@ -44,6 +44,10 @@
 #include <nav_msgs/Odometry.h>          // for odom data
 #include <geometry_msgs/Twist.h>        // for geometry msg
 
+#include <image_transport/image_transport.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <cv_bridge/cv_bridge.h>
+
 
 // class dstream_out
 // {
@@ -71,7 +75,7 @@ class CWallFollower
   void updatecommandVelocity(double linear, double angular);
   void laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg);
   void odomMsgCallBack(const nav_msgs::Odometry::ConstPtr &msg);
-
+  static void imageCallback(const sensor_msgs::ImageConstPtr& msg);
   // Private Variables
   /**
     * Dictionary that maps a given rotation angle to the angles specified
@@ -155,6 +159,20 @@ class CWallFollower
     ///
     double linearV= LINEAR_VELOCITY;
     double angularV = ANGULAR_VELOCITY;
+
+    /**
+     * Camera Color detection to determine the end of the maze 
+     * Need to define tolerances of end of maze color which will be red
+     * Must store the RGB values which determine a red surface
+     * Must store the percentage red of the surface
+     */
+    int MAX_BLUE_ = 100;
+    int MAX_GREEN_ = 60;
+    int MIN_RED_ = 210;
+
+    double Density_Red = 0; //value 0-1
+    double Thresh_Desnsity_Red = 0.6;
+
 
     CWallFollower();
     ~CWallFollower();

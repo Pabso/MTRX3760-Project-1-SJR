@@ -1,11 +1,13 @@
 #ifndef DETERMINEND_H
 #define DETERMINEND_H
 
-class Camera 
+#include "wallFollower.h"
+#include <ros/ros.h>
+
+class End
 {
     public:
-        
-    private:
+    void handler(CWallFollower *bot);
 };
 
 #endif
