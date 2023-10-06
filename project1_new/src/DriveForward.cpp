@@ -84,7 +84,7 @@ double CDriveForward::PIDController(double reference, double measured, CWallFoll
   double output;
   double derivative;
 
-  if ((wf->prevState != wf->States::DRIVE_FOWARD) || (dt > 0.1)) {
+  if ((wf->previousState != wf->States::DRIVE_FOWARD) || (dt > 0.1)) {
     derivative = 0;
 
     // Set output to PI if dt is too large or the last state was drive forward
