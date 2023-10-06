@@ -43,10 +43,12 @@ bool CWallFollower::init()
 
 void CWallFollower::imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
+  //Convert ROS image to OpenCV to process
   cv_bridge::CvImagePtr cv_ptr;
 
   try
   {
+    //Copy image to pointer in RGB
     cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
   }
   catch (cv_bridge::Exception& e)
@@ -54,6 +56,7 @@ void CWallFollower::imageCallback(const sensor_msgs::ImageConstPtr& msg)
     ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
   }
 
+  //Set inital values
   int total_pixels = cv_ptr->image.cols*cv_ptr->image.rows;
   int red_pixels = 0;
 
@@ -63,7 +66,7 @@ void CWallFollower::imageCallback(const sensor_msgs::ImageConstPtr& msg)
     //go through all rows
     for(int x = 0; x < cv_ptr->image.rows; x++ )
     {
-      //go through all channels (b,g,r)
+      //go through all channels (b,g,r) and determine if in threshold to be a red pixel
       if (cv_ptr->image.data[0 + 3*x + y*cv_ptr->image.cols*4 ] < MAX_BLUE_ && cv_ptr->image.data[1 + 3*x + y*cv_ptr->image.cols*4 ] < MAX_GREEN_ && cv_ptr->image.data[2 + 3*x + y*cv_ptr->image.cols*4 ] > MIN_RED_)
         {
           red_pixels++;
@@ -71,7 +74,15 @@ void CWallFollower::imageCallback(const sensor_msgs::ImageConstPtr& msg)
     }
   }
 
+  //Determine RED Desnity
   Density_Red = red_pixels/total_pixels;
+
+  //Display the image using OpenCV
+  cv::imshow("Image Processed", cv_ptr->image);
+  //Add some delay in miliseconds. The function only works if there is at least one HighGUI window created and the window is active. If there are several HighGUI windows, any of them can be active.
+  cv::waitKey(3);
+  //Publish new image 
+  pub.publish(cv_ptr->toImageMsg());
 
 }
 
