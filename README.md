@@ -61,7 +61,27 @@ run roswtf on the turtlebot to see any issues.
 See https://wiki.ros.org/ROS/NetworkSetup for more details  
 
 
+## Running the Simulation 
+TERMINAL 1 (launching gazebo)
+- export TURTLEBOT3_MODEL=burger
+- roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
+  - import model mazered into gazebo grid
 
+TERMINAL 2 (launching rVis)
+- roslaunch turtlebot3_gazebo turtlebot3_gazebo_rvis.launch
+  - edit odom and LaserScan parameters to create path and maze boundary lines
+  - LaserScan
+	  - decay time: 600 (equiv of 10mins)
+  - odom
+  	- position tolerance: 0.01
+  	- angle tolerance: 10
+  	- keep: 0
+  	- colour: 255,255, 0
+  	- shaft length: 0.05
+  	- shaft radius: 0.04
+  	- head length: 0
+	  - head radius: 0
+	  - convariance: OFF (dis-select)
 
-
-
+TERMINAL 3 (running sim)
+- roslaunch turtlebot3_gazebo [launch file of our code]
