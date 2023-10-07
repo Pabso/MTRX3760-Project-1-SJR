@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   sensor_msgs
+  cv_bridge
+  image_transport
   geometry_msgs
   nav_msgs
   tf
@@ -44,7 +46,7 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add "message_generation" and every package in MSG_DEP_SET to
 ##     find_package(catkin REQUIRED COMPONENTS ...)
 ##   * add "message_runtime" and every package in MSG_DEP_SET to
-##     catkin_package(CATKIN_DEPENDS ...)
+##     catkin_package(CATKIN_DEPENDS ...)<?xml version="1.0"?>
 ##   * uncomment the add_*_files sections below as needed
 ##     and list every .msg/.srv/.action file to be processed
 ##   * uncomment the generate_messages entry below
@@ -108,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp std_msgs sensor_msgs geometry_msgs nav_msgs tf gazebo_ros
+  CATKIN_DEPENDS roscpp std_msgs sensor_msgs geometry_msgs nav_msgs tf gazebo_ros cv_bridge 
   DEPENDS gazebo
 )
 
@@ -131,6 +133,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -163,9 +166,12 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(wallFollower src/wallFollower.cpp)
-add_dependencies(wallFollower ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(wallFollower ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_executable(${PROJECT_NAME}_node src/wallFollower.cpp src/DriveForward.cpp src/concave.cpp src/convexState.cpp src/DetermineEnd.cpp)
+
+# add_executable(${PROJECT_NAME}_node src/DriveForward.cpp)
+
+add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} ${OpenCV_LIBRARIES}) 
 
 #############
 ## Install ##
@@ -209,7 +215,8 @@ target_link_libraries(wallFollower ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
-install(TARGETS wallFollower
+install(TARGETS 
+  ${PROJECT_NAME}_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

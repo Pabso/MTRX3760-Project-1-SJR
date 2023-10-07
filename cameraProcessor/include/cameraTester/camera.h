@@ -2,8 +2,8 @@
 #define CAMERA_H
 
 #define QUEUE_SIZE 1
-#define IMAGE_TOPIC "/camera/rgb/image_raw"
-#define THRESH_RED_IMAGE 0.7
+#define IMAGE_TOPIC "/camera/image_raw"
+#define THRESH_RED_IMAGE 0.9
 #define THRESH_RED_PIXEL 0.7
 
 // Are all these includes nessisary?
