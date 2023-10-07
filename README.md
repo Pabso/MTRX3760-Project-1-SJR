@@ -85,3 +85,20 @@ TERMINAL 2 (launching rVis)
 
 TERMINAL 3 (running sim)
 - roslaunch turtlebot3_gazebo [launch file of our code]
+
+## For SIM (2)
+# Terminal 1)
+TERMINAL 1 (launching gazebo)
+- export TURTLEBOT3_MODEL=burger
+- roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
+  - import model mazered into gazebo grid
+# Terminal 2) 
+TERMINAL 2 (launching rVis)
+- roslaunch turtlebot3_gazebo turtlebot3_gazebo_rvis.launch
+# Terminal 3)
+source catkin_ws/devel/setup.bash
+rosrun cameraProcessor cameraProcessor_node
+# Terminal 4)
+source catkin_ws/devel/setup.bash
+rosrun project1 project1_node
+
