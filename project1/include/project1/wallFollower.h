@@ -38,9 +38,10 @@ class CWallFollower
     ros::Publisher cmd_vel_pub_;
 
     // ROS Topic Subscribersg
-    ros::Subscrilaser_scan_sub_;
+    ros::Subscriber _scan_sub_;
     ros::Subscriber odom_sub_;
     ros::Subscriber sub_img_bool_;
+    ros::Subscriber laser_scan_sub_;
 
     // ROS callbacks
     void imgBool(const std_msgs::Bool::ConstPtr &msg);
