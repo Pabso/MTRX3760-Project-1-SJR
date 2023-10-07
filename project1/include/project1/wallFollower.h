@@ -1,21 +1,3 @@
-/**
- * Description Here!
- *
- *
- * Looks at one point to the left and one point directly infront
- *
- * Laser Info!
- *  see /opt/ros/noetic/share/sensor_msgs/msg/Range.msg for exact msg
- *  ranges[] should contain 360 elements.
-*/
-
-/*
-  Authors: 
-  Rohan Meagher 510457860
-  ...
-  
-*/
-
 // ----- Header Guards ----- 
 #ifndef WALLFOLLWER_H
 #define WALLFOLLWER_H
@@ -28,8 +10,6 @@
 #define LINEAR_VELOCITY  0.6
 #define ANGULAR_VELOCITY 0.3
 #define WINDOW_SIZE 2
-#define SIM
-
 
 // ----- Includes ----- 
 #include "ros/ros.h"
@@ -42,10 +22,6 @@
 #include <nav_msgs/Odometry.h>          // for odom data
 #include <geometry_msgs/Twist.h>        // for geometry msg
 #include <std_msgs/Bool.h>              // for camera
-#include <image_transport/image_transport.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <cv_bridge/cv_bridge.h>
-
 
 // ----- Foward Declarations ----- 
 class CDriveForward;
@@ -62,7 +38,7 @@ class CWallFollower
     ros::Publisher cmd_vel_pub_;
 
     // ROS Topic Subscribersg
-    ros::Subscriber laser_scan_sub_;
+    ros::Subscrilaser_scan_sub_;
     ros::Subscriber odom_sub_;
     ros::Subscriber sub_img_bool_;
 
@@ -71,8 +47,6 @@ class CWallFollower
     void updatecommandVelocity(double linear, double angular);
     void laserScanMsgCallBack(const sensor_msgs::LaserScan::ConstPtr &msg);
     void odomMsgCallBack(const nav_msgs::Odometry::ConstPtr &msg);
-    //void imageCallback(const sensor_msgs::ImageConstPtr& msg);
-
     // ------- Scan -------
     /**
       * Moving average filter for /scan data
@@ -135,22 +109,10 @@ class CWallFollower
     States nextState;
 
     // ------ Color Detection -------
-    // const int MAX_BLUE_ = 100;
-    // const int MAX_GREEN_ = 60;
-    // const int MIN_RED_ = 210;
-    // double Density_Red = 0; //value 0-1
     bool detectedRed = false;
-    /// Threshold density for dectected red colour from camera
-    double Thresh_Desnsity_Red = 0.6;
 
     // ------- Object avoidance -------
-    #ifdef SIM
-      double bubble_size_ = 0.25;
-    #endif
-    #ifndef SIM
-      double bubble_size_ = 0.155;
-    #endif
-    //double bublle_tolerance = 0.05;
+    double bubble_size_ = 0.155;
     /**
     * Map containing scan raw scan data.
     * Data stored with same key set as @see mRotationAngles
@@ -193,7 +155,6 @@ class CWallFollower
      * 45 degrees to the right, if angle = 7*pi/4 (315 degrees) the turtlebot
      * will turn 45 degrees to the left.
     */
-    
     bool turnOdom(double angle);
 
 };

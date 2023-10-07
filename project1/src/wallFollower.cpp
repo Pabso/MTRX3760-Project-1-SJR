@@ -1,7 +1,4 @@
 #include "../include/project1/wallFollower.h"
-// #include "../include/project1/ConcaveCorner.h"
-// #include "../include/project1/convexState.h"
-
 
 CWallFollower::CWallFollower()
  : nh_priv_("~")
@@ -22,16 +19,12 @@ CWallFollower::~CWallFollower()
 bool CWallFollower::init()
 {
   // initalisze publishers
-  //image_transport::ImageTransport it(nh_);
   cmd_vel_pub_  = nh_.advertise<geometry_msgs::Twist>( "/cmd_vel", 10 );
-  //image_transport::Publisher pub_img = it.advertise("camera/image", 10);
-  //image_transport::ImageTransport it(nh_);
+
   /// initialize subscribers
   laser_scan_sub_  = nh_.subscribe("scan", 10, &CWallFollower::laserScanMsgCallBack, this);
   odom_sub_ = nh_.subscribe("odom", 10, &CWallFollower::odomMsgCallBack, this);
   sub_img_bool_ = nh_.subscribe("Red_bool", 10, &CWallFollower::imgBool, this);
-  //image_transport::Subscriber sub = it.subscribe("/camera/image_raw", 10, &CWallFollower::imageCallback, this);
-  //sub_img = nh_.subscribe("/camera/image_raw/compressed", 2, &CWallFollower::imageCallback, this);
 
   // Fill mScanRanges with zeros
   for ( const auto &pair : mRotationAngles)
@@ -59,53 +52,6 @@ void CWallFollower::imgBool(const std_msgs::Bool::ConstPtr &msg)
   detectedRed = msg->data;
 }
 
-// void CWallFollower::imageCallback(const sensor_msgs::ImageConstPtr& msg)
-// {
-//   std::cout << "In img callback" << std::endl;
-//   // //Convert ROS image to OpenCV to process
-//   // cv_bridge::CvImagePtr cv_ptr;
-
-//   // try
-//   // {
-//   //   //Copy image to pointer in RGB
-//   //   cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
-//   // }
-//   // catch (cv_bridge::Exception& e)
-//   // {
-//   //   ROS_ERROR("Sup");
-//   //   //ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
-//   // }
-
-//   // //Set inital values
-//   // int total_pixels = cv_ptr->image.cols*cv_ptr->image.rows;
-//   // int red_pixels = 0;
-
-//   // //Go through all columns
-//   // for(int y = 0; y < cv_ptr->image.cols; y++ )
-//   // { 
-//   //   //go through all rows
-//   //   for(int x = 0; x < cv_ptr->image.rows; x++ )
-//   //   {
-//   //     //go through all channels (b,g,r) and determine if in threshold to be a red pixel
-//   //     if (cv_ptr->image.data[0 + 3*x + y*cv_ptr->image.cols*4 ] < MAX_BLUE_ && cv_ptr->image.data[1 + 3*x + y*cv_ptr->image.cols*4 ] < MAX_GREEN_ && cv_ptr->image.data[2 + 3*x + y*cv_ptr->image.cols*4 ] > MIN_RED_)
-//   //       {
-//   //         red_pixels++;
-//   //       }
-//   //   }
-//   // }
-
-//   // //Determine RED Desnity
-//   // Density_Red = red_pixels/total_pixels;
-
-//   // //Display the image using OpenCV
-//   // cv::imshow("Image Processed", cv_ptr->image);
-//   // //Add some delay in miliseconds. The function only works if there is at least one HighGUI window created and the window is active. If there are several HighGUI windows, any of them can be active.
-//   // cv::waitKey(3);
-//   // //Publish new image 
-//   // //pub.publish(cv_ptr->toImageMsg());
-//   // std::cout << "Red Density:" << Density_Red << std::endl;
-// }
-
 void CWallFollower::updatecommandVelocity(double linear, double angular)
 {
   geometry_msgs::Twist cmd_vel;
@@ -119,13 +65,6 @@ void CWallFollower::updatecommandVelocity(double linear, double angular)
 
 bool CWallFollower::controlLoop()
 {
-  // static int counter = 0;
-  // if (counter == 0)
-  // {
-  //   turnOdom(1.35);
-  // }
-  // counter++;
-
   // ------ Static classes ------ 
   static CDriveForward driveFoward(kp_, ki_, kd_);
   static CConcaveCorner concaveSolver;
@@ -169,7 +108,6 @@ bool CWallFollower::controlLoop()
   return true;
 }
 
-// Function to apply a moving average filter to Lidar data
 void CWallFollower::applyMovingAverageFilter() {
   // used to count over the 0->filterWindowSize counts
   static int counter= 0;

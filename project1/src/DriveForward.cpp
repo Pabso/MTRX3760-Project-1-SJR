@@ -10,7 +10,6 @@
 
 void CDriveForward::handler(CWallFollower* wf)
 {
-
   // Determine if the bot should transition to another state wf->nextState
   wf->nextState = wf->States::DRIVE_FOWARD;
   int convex_sum = 0;
@@ -127,18 +126,6 @@ void CDriveForward::handler(CWallFollower* wf)
     }
   }
   LHS_average = LHS_average/count;
-
-  // // Average of -10 to 10 degrees distances, accounting for arc
-  // double LHS_average = 
-  //   (wf->filteredScanData[-10]*std::cos(DEG_TO_RAD(-10)) +
-  //   wf->filteredScanData[-5]*std::cos(DEG_TO_RAD(-5)) +
-  //   wf->filteredScanData[0] +
-  //   wf->filteredScanData[5]*std::cos(DEG_TO_RAD(5)) +
-  //   wf->filteredScanData[10]*std::cos(DEG_TO_RAD(10)))/5;
-  
-  // // Apply PID control
-  // std::cout << wf->filteredScanData[smallestLHSPointAngle] << "," << smallestLHSPointAngle<< std::endl;
-  // std::cout << LHS_average << "," << smallestLHSPointAngle<< std::endl;
   wf->angularV = PIDController(wf->bubble_size_, LHS_average);
 }
 
@@ -161,12 +148,6 @@ double CDriveForward::PIDController(double reference, double measured)
   double error = reference - measured;
   // Update the integral term (Euler's method)
   integral_ += error * dt;
-
-  // Calculate the derivative term using backwards difference
-  double derivative = (error - prevError_) / dt;
-
-  // // Calculate the PID output
-  // double output = kp_ * error + ki_ * integral_ + kd_ * derivative;
 
   //Alternatively, just use PI
   double output = kp_ * error + ki_ * error;
